@@ -42,6 +42,7 @@ export const asyncRouterMap = [
       },
     ]
   },
+  //--------------
   {
     path: '/user',
     component: Layout,
@@ -61,5 +62,21 @@ export const asyncRouterMap = [
       },
     ]
   },
+  //--------------
+  {
+    path: "/examination",
+    component: Layout,
+    redirect: '/examination/dict',
+    name: "考题集锦",
+    meta: {title: "考题集锦", icon: 'tree'},
+    children: [
+        {path: "dict",name: "考题字典",component: _import('examination/dict'), meta: {title: "考题字典", icon: 'user'}, menu: 'dict' },
+        {path: "qustion",name: "考题列表",component: _import('examination/qustion'), meta: {title: "考题列表", icon: 'user'}, menu: 'dict' },
+        {path: "createtest",name: "生成试卷",component: _import('examination/createtest'), meta: {title: "生成试卷", icon: 'user'}, menu: 'dict' }
+    ]
+  },
+  //--------------
+
+
   {path: '*', redirect: '/404', hidden: true}
 ]

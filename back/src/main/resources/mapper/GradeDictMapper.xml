@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.heeexy.example.dao.GradeDictDao">
+
+    <insert id="addMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        INSERT INTO t_grade_dict
+            (`type`,dict_name,parent_id,create_time,update_time,create_name,update_name)
+        VALUES
+            (#{type},#{dictName},#{parentId},#{createTime},#{updateTime},#{createName},#{update_name})
+    </insert>
+
+    <select id="countMysql" resultType="Integer">
+        SELECT count(0)
+        FROM t_grade_dict w
+        WHERE 1=1
+    </select>
+
+    <select id="listMysql" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT
+        w.id, w.`type`, w.dict_name as dictName, w.parent_id AS parentId,
+        date_format(w.create_time, '%Y.%m.%d %T') createTime,
+        date_format(w.update_time, '%Y.%m.%d %T') updateTime,
+        w.create_name as createName, w.update_name AS updateName
+        FROM t_grade_dict w
+        WHERE 1=1
+        ORDER BY w.id DESC
+    </select>
+
+    <update id="updateMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE t_grade_dict
+        SET content = #{content}
+        WHERE id = #{id}
+    </update>
+
+</mapper>
