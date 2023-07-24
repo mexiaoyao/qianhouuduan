@@ -295,3 +295,24 @@ export function num_Fixed(val){
     return num.toFixed(n);
   }
 }
+
+export function getTreeParents (treeData) {
+  let parentId = 0;
+  let tree = [];
+  treeData.forEach((item) => {
+    if(item.parentId==parentId){
+      tree.push(findChild(item, treeData));
+    }
+  })
+  return tree
+}
+function findChild(gradeDict, list){
+  let children = [];
+  list.forEach((n) => {
+    if(n.parentId == gradeDict.id){
+      children.push(findChild(n,list));
+  }
+  })
+  gradeDict.children = children;
+  return gradeDict;
+}

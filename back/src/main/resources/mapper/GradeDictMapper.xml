@@ -13,7 +13,7 @@
     <select id="countMysql" resultType="Integer">
         SELECT count(0)
         FROM t_grade_dict w
-        WHERE 1=1
+        WHERE w.`type` = #{type}
     </select>
 
     <select id="listMysql" resultType="com.alibaba.fastjson.JSONObject">
@@ -23,7 +23,7 @@
         date_format(w.update_time, '%Y.%m.%d %T') updateTime,
         w.create_name as createName, w.update_name AS updateName
         FROM t_grade_dict w
-        WHERE 1=1
+        WHERE w.`type` = #{type}
         ORDER BY w.id DESC
     </select>
 

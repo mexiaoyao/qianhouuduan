@@ -2,14 +2,21 @@
   <div class="app-container">
     <div class="filter-container">
       <el-form>
+        <el-form-item label="试卷种类">
+          <el-select v-model="parmes.type" placeholder="请选择试卷种类" @change="getList">
+            <el-option label="试卷种类" :value="1"></el-option>
+            <el-option label="所属年级" :value="2"></el-option>
+            <el-option label="考题来源" :value="3"></el-option>
+            <el-option label="考题类型" :value="4"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="plus" @click="showCreate" v-permission="'dict:add'">添加
           </el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="list" v-loading="listLoading"  border fit
-              highlight-current-row>
+    <el-table :data="list" v-loading="listLoading" :tree-props="{children: 'children', hasChildren: 'hasChildren'}"  border fit highlight-current-row>
       <el-table-column align="center" label="序号" width="80">
         <template slot-scope="scope">
           <span v-text="getIndex(scope.$index)"> </span>
@@ -47,15 +54,17 @@
   </div>
 </template>
 <script>
+import { getTreeParents } from '../../utils/index';
   export default {
     data() {
       return {
+        parmes:{
+          type:1
+        },
         totalCount: 0, //分页组件--数据总条数
         list: [],//表格的数据
         listLoading: false,//数据加载等待动画
-        listQuery: {
-          name: ''
-        },
+
         dialogStatus: 'create',
         dialogFormVisible: false,
         textMap: {
@@ -65,7 +74,7 @@
         tempArticle: {
           id: "",
           content: ""
-        }
+        },
       }
     },
     created() {
@@ -81,18 +90,14 @@
         this.api({
           url: "/dict/list",
           method: "get",
-          params: this.listQuery
+          params: this.parmes
         }).then(data => {
           this.listLoading = false;
-          this.list = data.list;
+          this.list = getTreeParents(data.list);
           this.totalCount = data.totalCount;
         })
       },
-      handleFilter() {
-        //改变了查询条件,从第一页开始查询
-        this.listQuery.pageNum = 1
-        this.getList()
-      },
+
       getIndex($index) {
         //表格序号
         return $index + 1
