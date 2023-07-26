@@ -16,12 +16,34 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="list" v-loading="listLoading" :tree-props="{children: 'children', hasChildren: 'hasChildren'}"  border fit highlight-current-row>
-      <el-table-column align="center" label="序号" width="80">
-        <template slot-scope="scope">
-          <span v-text="getIndex(scope.$index)"> </span>
-        </template>
+    <el-table
+      :data="list"
+      style="width: 100%;margin-bottom: 20px;"
+      row-key="id"
+      border
+      default-expand-all
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+      <el-table-column
+        prop="createTime"
+        label="日期"
+        sortable
+        width="180">
       </el-table-column>
+      <el-table-column
+        prop="dictName"
+        label="姓名"
+        sortable
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="updateTime"
+        label="地址">
+      </el-table-column>
+    </el-table>
+
+
+
+    <el-table :data="list" v-loading="listLoading" :tree-props="{children: 'children', hasChildren: 'hasChildren'}"  border fit highlight-current-row>
       <el-table-column align="center" label="类型">
         <template slot-scope="scope">
           <span v-text="getType(scope.row.type)"></span>
@@ -94,7 +116,6 @@ import { getTreeParents } from '../../utils/index';
         }).then(data => {
           this.listLoading = false;
           this.list = getTreeParents(data.list);
-          this.totalCount = data.totalCount;
         })
       },
 

@@ -295,24 +295,36 @@ export function num_Fixed(val){
     return num.toFixed(n);
   }
 }
+export function getTreeParents(items){
+  const result = []; // 存放结果集
+  const itemMap = {}; //
+  for (const item of items) {
+      const id = item.id;
+      const pid = item.parentId;
 
-export function getTreeParents (treeData) {
-  let parentId = 0;
-  let tree = [];
-  treeData.forEach((item) => {
-    if(item.parentId==parentId){
-      tree.push(findChild(item, treeData));
-    }
-  })
-  return tree
-}
-function findChild(gradeDict, list){
-  let children = [];
-  list.forEach((n) => {
-    if(n.parentId == gradeDict.id){
-      children.push(findChild(n,list));
+      if (!itemMap[id]) {
+          itemMap[id] = {
+              children: [],
+          };
+      }
+
+      itemMap[id] = {
+          ...item,
+          children: itemMap[id]["children"],
+      };
+
+      const treeItem = itemMap[id];
+
+      if (pid === 0) {
+          result.push(treeItem);
+      } else {
+          if (!itemMap[pid]) {
+              itemMap[pid] = {
+                  children: [],
+              };
+          }
+          itemMap[pid].children.push(treeItem);
+      }
   }
-  })
-  gradeDict.children = children;
-  return gradeDict;
+  return result;
 }
