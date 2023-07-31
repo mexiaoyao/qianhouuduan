@@ -304,7 +304,7 @@ export function getTreeParents(items){
 
       if (!itemMap[id]) {
           itemMap[id] = {
-              children: [],
+            children: [],
           };
       }
 
@@ -320,7 +320,7 @@ export function getTreeParents(items){
       } else {
           if (!itemMap[pid]) {
               itemMap[pid] = {
-                  children: [],
+                children: [],
               };
           }
           itemMap[pid].children.push(treeItem);

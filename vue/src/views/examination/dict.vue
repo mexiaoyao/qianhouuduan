@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form>
+      <el-form :inline="true">
         <el-form-item label="试卷种类">
           <el-select v-model="parmes.type" placeholder="请选择试卷种类" @change="getList">
             <el-option label="试卷种类" :value="1"></el-option>
@@ -18,59 +18,36 @@
     </div>
     <el-table
       :data="list"
+      :row-class-name ="rowClaName" 
       style="width: 100%;margin-bottom: 20px;"
       row-key="id"
       border
-      default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-      <el-table-column
-        prop="createTime"
-        label="日期"
-        sortable
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="dictName"
-        label="姓名"
-        sortable
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="updateTime"
-        label="地址">
-      </el-table-column>
-    </el-table>
-
-
-
-    <el-table :data="list" v-loading="listLoading" :tree-props="{children: 'children', hasChildren: 'hasChildren'}"  border fit highlight-current-row>
-      <el-table-column align="center" label="类型">
-        <template slot-scope="scope">
-          <span v-text="getType(scope.row.type)"></span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="dictName" label="字典名称"></el-table-column>
+      <el-table-column align="left" prop="dictName" label="字典名称"></el-table-column>
       <el-table-column align="center" prop="createTime" label="创建时间" width="170"/>
       <el-table-column align="center" prop="updateTime" label="最近修改时间" width="170"/>
-      <el-table-column align="center" label="管理" width="200" >
+      <el-table-column align="center" prop="createName" label="创建者" width="100"/>
+      <el-table-column align="center" prop="updateName" label="修改者" width="100"/>
+      <el-table-column align="center" label="操作" width="200" >
         <template slot-scope="scope">
-          <el-button type="primary" icon="edit" @click="showUpdate(scope.$index)"  v-permission="'dict:update'">修改</el-button>
+          <el-button type="success" size="mini" icon="el-icon-plus" @click="showCreate(scope.row)"  v-permission="'dict:add'" title="添加" />
+          <el-button type="warning" size="mini" icon="el-icon-edit" @click="showUpdate(scope.row)"  v-permission="'dict:update'" title="编辑" />
+          <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeUser(scope.row)"  v-permission="'dict:delete'" title="删除" />
         </template>
       </el-table-column>
     </el-table>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form class="small-space" :model="tempArticle" label-position="left" label-width="60px"
-               style='width: 500px; margin-left:50px;'>
-        <el-form-item label="文章">
-          <el-input type="textarea" style="width:100%" show-word-limit v-model="tempArticle.content"  maxlength="100">
+      <el-form class="small-space" :model="form" label-position="left" label-width="80px" style='width: 500px; margin-left:50px;'>
+        <el-form-item label="字典名称">
+          <el-input type="text" style="width:100%" v-model="form.dictName"  maxlength="100">
           </el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button v-if="dialogStatus==='create'" type="success" @click="createArticle">创 建</el-button>
-        <el-button type="primary" v-else @click="updateArticle">修 改</el-button>
+        <el-button v-if="dialogStatus==='create'" type="success" @click="createForm">创建</el-button>
+        <el-button type="primary" v-else @click="updateForm">修改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -91,11 +68,10 @@ import { getTreeParents } from '../../utils/index';
         dialogFormVisible: false,
         textMap: {
           update: '编辑',
-          create: '创建文章'
+          create: '添加'
         },
-        tempArticle: {
-          id: "",
-          content: ""
+        form: {
+          dictName: ""
         },
       }
     },
@@ -103,6 +79,28 @@ import { getTreeParents } from '../../utils/index';
       this.getList();
     },
     methods: {
+      rowClaName({row, rowIndex}){ // eslint-disable-line no-unused-vars
+        if(row.parentId){
+            //组内元素
+            const parents_id = row.parentId;
+            const p_index = this.reArrIndex(this.list, 'id', parents_id); //找到父元素在组里的index
+            if(p_index !== -1){
+                  const [...p_arr] = this.list[p_index]['children'];
+                  const s_index = this.reArrIndex(p_arr, 'id', row.id);
+                  row.index = s_index;
+              }
+        }else{
+              const t_index = this.reArrIndex(this.list, 'id', row.id); //找到父元素在组里的index
+              row.index = t_index;
+        }
+      },
+      //封装二维数组根据某个索引对象中的某个属性，返回当前索引
+      reArrIndex(arr, attr, attrval){
+          let index = arr.findIndex((item) => {
+              return item[attr] == attrval;
+          });
+          return index;
+      },
       getList() {
         //查询列表
         if (!this.hasPerm('dict:list')) {
@@ -137,39 +135,63 @@ import { getTreeParents } from '../../utils/index';
             return "";
         }
       },
-      showCreate() {
+      showCreate(row) {
         //显示新增对话框
-        this.tempArticle.content = "";
+        this.form.dictName = "";
+        this.form.parentId = row.id || 0;
+        this.form.type = row.type || this.parmes.type;
         this.dialogStatus = "create"
         this.dialogFormVisible = true
       },
-      showUpdate($index) {
+      showUpdate(row) {
         //显示修改对话框
-        this.tempArticle.id = this.list[$index].id;
-        this.tempArticle.content = this.list[$index].content;
+        this.form.id = row.id;
+        this.form.dictName = row.dictName || "";
+        this.form.parentId = row.parentId || 0;
+        this.form.type = row.type;
         this.dialogStatus = "update"
         this.dialogFormVisible = true
       },
-      createArticle() {
+      createForm() {
         //保存新文章
         this.api({
-          url: "/article/addArticle",
+          url: "/dict/add",
           method: "post",
-          data: this.tempArticle
+          data: this.form
         }).then(() => {
           this.getList();
           this.dialogFormVisible = false
         })
       },
-      updateArticle() {
+      updateForm() {
         //修改文章
         this.api({
-          url: "/article/updateArticle",
+          url: "/dict/update",
           method: "post",
-          data: this.tempArticle
+          data: this.form
         }).then(() => {
           this.getList();
           this.dialogFormVisible = false
+        })
+      },
+      removeUser(row) {
+        let _vue = this;
+        this.$confirm('确定删除"'+row.dictName+'"?', '提示', {
+          confirmButtonText: '确定',
+          showCancelButton: false,
+          type: 'warning'
+        }).then(() => {
+          let data = {id:row.id};
+          _vue.api({
+            url: "/dict/delete",
+            method: "post",
+            data: data
+          }).then(() => {
+            this.$message.success('删除成功')
+            _vue.getList()
+          }).catch(() => {
+            _vue.$message.error("删除失败")
+          })
         })
       },
     }

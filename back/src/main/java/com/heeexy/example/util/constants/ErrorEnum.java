@@ -22,7 +22,8 @@ public enum ErrorEnum {
 
 
     G_add001("gadd001", "添加失败"),
-    G_update001("gupdate001", "添加失败");
+    G_update001("gupdate001", "添加失败"),
+    G_delete001("gdelete001", "删除失败");
 
     private final String errorCode;
 

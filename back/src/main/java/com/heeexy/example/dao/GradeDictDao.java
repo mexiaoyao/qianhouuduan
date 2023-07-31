@@ -13,4 +13,6 @@ public interface GradeDictDao {
     List<JSONObject> listMysql(JSONObject jsonObject);
 
     int updateMysql(JSONObject jsonObject);
+
+    int removeMysql(JSONObject jsonObject);
 }

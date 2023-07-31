@@ -9,8 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.heeexy.example.util.constants.ErrorEnum.G_add001;
-import static com.heeexy.example.util.constants.ErrorEnum.G_update001;
+import static com.heeexy.example.util.constants.ErrorEnum.*;
 
 /**
  * @author: heeexy
@@ -46,6 +45,16 @@ public class GradeDictService {
             return CommonUtil.successJson();
         }else{
             return CommonUtil.errorJson(G_update001);
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public JSONObject removeMysql(JSONObject jsonObject) {
+        int result = mysqlDao.removeMysql(jsonObject);
+        if(result>0){
+            return CommonUtil.successJson();
+        }else{
+            return CommonUtil.errorJson(G_delete001);
         }
     }
 }
