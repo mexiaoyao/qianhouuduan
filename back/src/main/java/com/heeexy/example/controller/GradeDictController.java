@@ -31,7 +31,7 @@ public class GradeDictController {
 
     @RequiresPermissions("dict:add")
     @PostMapping("/add")
-    public JSONObject addArticle(@RequestBody JSONObject requestJson) {
+    public JSONObject add(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "type,dictName");
         if(StringTools.isNullOrEmpty(requestJson.get("parentId"))){
             requestJson.put("parentId", 0);
@@ -54,7 +54,7 @@ public class GradeDictController {
 
     @RequiresPermissions("dict:update")
     @PostMapping("/update")
-    public JSONObject updateArticle(@RequestBody JSONObject requestJson) {
+    public JSONObject update(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "id,parentId,type,dictName");
         if(StringTools.isNullOrEmpty(requestJson.get("updateTime"))){
             requestJson.put("updateTime", DateUtils.getDate());
@@ -67,7 +67,7 @@ public class GradeDictController {
     }
     @RequiresPermissions("dict:delete")
     @PostMapping("/delete")
-    public JSONObject deleteArticle(@RequestBody JSONObject requestJson) {
+    public JSONObject delete(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "id");
         return service.removeMysql(requestJson);
     }

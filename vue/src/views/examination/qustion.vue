@@ -1,10 +1,69 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form>
+      <el-form :form="form" @submit="submitSearch" :inline="true">
+        <el-form-item label="试卷种类">
+            <el-cascader
+                :allowClear="true"
+                :fieldNames="{children:'children', label:'dictName', value: 'id' }"
+                :options="questionTaskList"
+                :placeholder="'请选择试卷种类'"
+                @change="dictTaskChange"
+                change-on-select
+                v-model="form.dictTaskId"
+            />
+        </el-form-item>
+        <el-form-item label="所属年级">
+            <el-cascader
+                :allowClear="true"
+                :fieldNames="{children:'children', label:'dictName', value: 'id' }"
+                :options="questionGradeList"
+                :placeholder="'请选择所属年级'"
+                @change="dictGradeChange"
+                change-on-select
+                v-model="form.dictGradeId"
+            />
+        </el-form-item>
+        <el-form-item label="题目来源">
+            <el-cascader
+                :allowClear="true"
+                :fieldNames="{children:'children', label:'dictName', value: 'id' }"
+                :options="questionSourceList"
+                :placeholder="'请选择题目来源'"
+                @change="dictSourceChange"
+                change-on-select
+                v-model="form.dictSourceId"
+            />
+        </el-form-item>
+        <el-form-item label="题目类型">
+            <el-cascader
+                :allowClear="true"
+                :fieldNames="{children:'children', label:'dictName', value: 'id' }"
+                :options="questionTypeList"
+                :placeholder="'请选择题目类型'"
+                @change="dictTypeChange"
+                change-on-select
+                v-model="form.dictTypeId"
+            />
+        </el-form-item>
+
+        <el-form-item label="考题种类">
+            <el-select :allowClear="true" :style="{width:'160px'}" v-model.trim="form.type">
+                <el-select-option
+                    :key="index"
+                    :value="item.code"
+                    v-for="(item,index) in typeList"
+                >{{item.codeName}}</el-select-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="问题">
+            <el-input allowClear placeholder="请输入问题" v-model.trim="form.question"></el-input>
+        </el-form-item>
+        <el-form-item label="创建人">
+            <el-input allowClear placeholder="请输入创建人" v-model.trim="form.createName"></el-input>
+        </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="plus" @click="showCreate" v-permission="'article:add'">添加
-          </el-button>
+            <el-button :disabled="isLoading" html-type="submit" type="primary">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -53,6 +112,36 @@
   export default {
     data() {
       return {
+        isLoading: false,
+        form: {
+            dictTaskId: [],
+            dictTaskName: [],
+
+            dictGradeId: [],
+            dictGradeName: [],
+
+            dictSourceId: [],
+            dictSourceName: [],
+
+            dictTypeId: [],
+            dictTypeName: [],
+
+            type: 0,
+            intro: "",
+            question: "",
+            answers: "",
+            answerRight: "",
+            createName: "",
+            remarks: "",
+        },
+        createTime: [null, null],
+        updateTime: [null, null],
+
+
+
+
+
+
         totalCount: 0, //分页组件--数据总条数
         list: [],//表格的数据
         listLoading: false,//数据加载等待动画
