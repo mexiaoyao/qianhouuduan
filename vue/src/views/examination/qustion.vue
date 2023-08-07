@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form :form="form" @submit="submitSearch" :inline="true">
+      <el-form :form="form" :inline="true">
         <el-form-item label="试卷种类">
             <el-cascader
                 :allowClear="true"
@@ -48,12 +48,8 @@
         </el-form-item>
 
         <el-form-item label="考题种类">
-            <el-select :allowClear="true" :style="{width:'160px'}" v-model.trim="form.type">
-                <el-select-option
-                    :key="index"
-                    :value="item.code"
-                    v-for="(item,index) in typeList"
-                >{{item.codeName}}</el-select-option>
+            <el-select :allowClear="true" :style="{width:'160px'}" v-model="form.type">
+                <el-option :key="index" :value="item.code" v-for="(item,index) in typeList" :label="item.codeName"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="问题">
@@ -63,7 +59,7 @@
             <el-input allowClear placeholder="请输入创建人" v-model.trim="form.createName"></el-input>
         </el-form-item>
         <el-form-item>
-            <el-button :disabled="isLoading" html-type="submit" type="primary">查询</el-button>
+            <el-button :disabled="isLoading" @click="submitSearch" type="primary">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -74,7 +70,12 @@
           <span v-text="getIndex(scope.$index)"> </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="content" label="文章" style="width: 60px;"></el-table-column>
+      <el-table-column align="center" prop="question" label="问题"></el-table-column>
+      <el-table-column align="center" prop="answerRight" label="答案"></el-table-column>
+      <el-table-column align="center" prop="usedNum" label="使用次数"></el-table-column>
+      <el-table-column align="center" prop="goodNum" label="点赞数"></el-table-column>
+      <el-table-column align="center" prop="poorNum" label="踩数"></el-table-column>
+      <el-table-column align="center" prop="shareNum" label="分享次数"></el-table-column>
       <el-table-column align="center" prop="createTime" label="创建时间" width="170"/>
       <el-table-column align="center" prop="updateTime" label="最近修改时间" width="170"/>
       <el-table-column align="center" label="管理" width="200" >
@@ -86,8 +87,8 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="listQuery.pageNum"
-      :page-size="listQuery.pageRow"
+      :current-page="form.pageNum"
+      :page-size="form.pageRow"
       :total="totalCount"
       :page-sizes="[10, 20, 50, 100]"
       layout="total, sizes, prev, pager, next, jumper">
@@ -109,47 +110,53 @@
   </div>
 </template>
 <script>
+  import Constants from "@/utils/constants";
+  import LangUtil from "@/utils/langUtil";
+  import examMixin from "@/views/examination/mixins/examMiXins";
   export default {
     data() {
       return {
-        isLoading: false,
         form: {
-            dictTaskId: [],
-            dictTaskName: [],
+          dictTaskId: [],
+          dictTaskName: [],
 
-            dictGradeId: [],
-            dictGradeName: [],
+          dictGradeId: [],
+          dictGradeName: [],
 
-            dictSourceId: [],
-            dictSourceName: [],
+          dictSourceId: [],
+          dictSourceName: [],
 
-            dictTypeId: [],
-            dictTypeName: [],
+          dictTypeId: [],
+          dictTypeName: [],
 
-            type: 0,
-            intro: "",
-            question: "",
-            answers: "",
-            answerRight: "",
-            createName: "",
-            remarks: "",
+          type: 0,
+          intro: "",
+          question: "",
+          answers: "",
+          answerRight: "",
+          createName: "",
+          remarks: "",
+
+          pageNum: 1,//页码
+          pageRow: 50,//每页条数
         },
         createTime: [null, null],
         updateTime: [null, null],
+        questionTaskList: [],
+        questionGradeList: [],
+        questionSourceList: [],
+        questionTypeList: [],
+        typeList: LangUtil.addAll(Constants.GRDEQUESTION.KAOTI_QUESTION_TYPE),
 
-
-
-
-
+        questionTaskList: [], //试卷种类
+        questionGradeList: [], //所属年级
+        questionSourceList: [], //考题来源
+        questionTypeList: [], //考题类型
 
         totalCount: 0, //分页组件--数据总条数
         list: [],//表格的数据
         listLoading: false,//数据加载等待动画
-        listQuery: {
-          pageNum: 1,//页码
-          pageRow: 50,//每页条数
-          name: ''
-        },
+
         dialogStatus: 'create',
         dialogFormVisible: false,
         textMap: {
@@ -162,20 +169,41 @@
         }
       }
     },
-    created() {
-      this.getList();
+    mixins: [examMixin],
+    mounted() {
+        this.initExam();
     },
+
     methods: {
+
+      submitSearch(){
+        this.getList();
+      },
+
       getList() {
         //查询列表
-        if (!this.hasPerm('article:list')) {
+        if (!this.hasPerm('question:list')) {
           return
         }
         this.listLoading = true;
+        let params = {};
+        Object.assign(
+          params,
+          {dictTaskPath:this.form.dictTaskId.join(",")},
+          {dictGradePath:this.form.dictGradeId.join(",")},
+          {dictSourcePath:this.form.dictSourceId.join(",")},
+          {dictTypePath:this.form.dictTypeId.join(",")},
+          {intro:this.form.intro},
+          {question:this.form.question},
+          {answers:this.form.answers},
+          {answerRight:this.form.answerRight},
+          {type:this.form.type},
+          {pageNum:this.form.pageNum, pageRow:this.form.pageRow}
+          );
         this.api({
-          url: "/article/listArticle",
-          method: "get",
-          params: this.listQuery
+          url: "/question/list",
+          method: "post",
+          data: params
         }).then(data => {
           this.listLoading = false;
           this.list = data.list;
@@ -184,22 +212,22 @@
       },
       handleSizeChange(val) {
         //改变每页数量
-        this.listQuery.pageRow = val
+        this.form.pageRow = val
         this.handleFilter();
       },
       handleCurrentChange(val) {
         //改变页码
-        this.listQuery.pageNum = val
+        this.form.pageNum = val
         this.getList();
       },
       handleFilter() {
         //改变了查询条件,从第一页开始查询
-        this.listQuery.pageNum = 1
+        this.form.pageNum = 1
         this.getList()
       },
       getIndex($index) {
         //表格序号
-        return (this.listQuery.pageNum - 1) * this.listQuery.pageRow + $index + 1
+        return (this.form.pageNum - 1) * this.form.pageRow + $index + 1
       },
       showCreate() {
         //显示新增对话框

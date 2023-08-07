@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.heeexy.example.dao.GradeQuestionDao">
+
+    <insert id="addMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        INSERT INTO t_grade_question
+        (id,
+        dict_task_path, dict_task_path_name,
+        dict_grade_path, dict_grade_path_name,
+        dict_source_path, dict_source_path_name,
+        dict_type_path, dict_type_path_name,
+        intro, question, answers, answer_right, `type`, used_num, good_num, poor_num,
+        create_time,update_time,share_num,img_url,create_name,remarks
+        )
+        VALUES
+        <foreach collection="list" separator="," item="item" index="index">
+            (
+            #{item.id},
+            #{item.dictTaskPath},#{item.dictTaskPathName},
+            #{item.dictGradePath},#{item.dictGradePathName},
+            #{item.dictSourcePath},#{item.dictSourcePathName},
+            #{item.dictTypePath},#{item.dictTypePathName},
+            #{item.intro},#{item.question},#{item.answers},#{item.answerRight},#{item.type},#{item.usedNum},#{item.goodNum},#{item.poorNum},
+            #{item.createTime},#{item.updateTime},#{item.shareNum},#{item.imgUrl},#{item.createName},#{item.remarks}
+            )
+        </foreach>
+    </insert>
+
+    <select id="countMysql" resultType="Integer">
+        SELECT count(0)
+        FROM t_grade_question
+        <where>
+            <if test="id !=null and id !=''">
+                and id = #{id}
+            </if>
+            <if test="dictTaskPath !=null and dictTaskPath !=''">
+                and dict_task_path like concat("%",#{dictTaskPath},"%")
+            </if>
+            <if test="dictTaskPathName !=null and dictTaskPathName !=''">
+                and dict_task_path_name like concat("%",#{dictTaskPathName},"%")
+            </if>
+            <if test="dictGradePath !=null and dictGradePath !=''">
+                and dict_grade_path like concat("%",#{dictGradePath},"%")
+            </if>
+            <if test="dictGradePathName !=null and dictGradePathName !=''">
+                and dict_grade_path_name like concat("%",#{dictGradePathName},"%")
+            </if>
+            <if test="dictSourcePath !=null and dictSourcePath !=''">
+                and dict_source_path like concat("%",#{dictSourcePath},"%")
+            </if>
+            <if test="dictSourcePathName !=null and dictSourcePathName !=''">
+                and dict_source_path_name like concat("%",#{dictSourcePathName},"%")
+            </if>
+            <if test="dictTypePath !=null and dictTypePath !=''">
+                and dict_type_path like concat("%",#{dictTypePath},"%")
+            </if>
+            <if test="dictTypePathName !=null and dictTypePathName !=''">
+                and dict_type_path_name like concat("%",#{dictTypePathName},"%")
+            </if>
+            <if test="intro !=null and intro !=''">
+                and intro like concat("%",#{intro},"%")
+            </if>
+            <if test="question !=null and question !=''">
+                and question like concat("%",#{question},"%")
+            </if>
+            <if test="answers !=null and answers !=''">
+                and answers like concat("%",#{answers},"%")
+            </if>
+            <if test="answerRight !=null and answerRight !=''">
+                and answer_right like concat("%",#{answerRight},"%")
+            </if>
+            <if test="type !=null and type!=0 ">
+                and `type` = #{type}
+            </if>
+            <if test="usedNumStart !=null">
+                and used_num &gt;= #{usedNumStart}
+            </if>
+            <if test="usedNumEnd !=null">
+                and used_num &lt; #{usedNumEnd}
+            </if>
+            <if test="goodNumStart !=null">
+                and good_num &gt;= #{goodNumStart}
+            </if>
+            <if test="goodNumEnd !=null">
+                and good_num &lt; #{goodNumEnd}
+            </if>
+            <if test="poorNumStart !=null">
+                and poor_num &gt;= #{poorNumStart}
+            </if>
+            <if test="poorNumEnd !=null">
+                and poor_num &lt; #{poorNumEnd}
+            </if>
+            <if test="shareNumStart !=null">
+                and share_num &gt;= #{shareNumStart}
+            </if>
+            <if test="shareNumEnd !=null">
+                and share_num &lt; #{shareNumEnd}
+            </if>
+            <if test="createTimeStart !=null">
+                and create_time &gt;= #{createTimeStart}
+            </if>
+            <if test="createTimeEnd !=null">
+                and create_time &lt; #{createTimeEnd}
+            </if>
+            <if test="updateTimeStart !=null">
+                and update_time &gt;= #{updateTimeStart}
+            </if>
+            <if test="updateTimeEnd !=null">
+                and update_time &lt; #{updateTimeEnd}
+            </if>
+            <if test="imgUrl !=null and imgUrl !=''">
+                and img_url like concat("%",#{imgUrl},"%")
+            </if>
+            <if test="createName !=null and createName !=''">
+                and create_name like concat("%",#{createName},"%")
+            </if>
+            <if test="remarks !=null and remarks !=''">
+                and remarks like concat("%",#{remarks},"%")
+            </if>
+        </where>
+    </select>
+    <select id="listMysql" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT
+        id,
+            dict_task_path as dictTaskPath, dict_task_path_name as dictTaskPathName,
+            dict_grade_path as dictGradePath, dict_grade_path_name as dictGradePathName,
+            dict_source_path as dictSourcePath, dict_source_path_name as dictSourcePathName,
+            dict_type_path as dictTypePath, dict_type_path_name as dictTypePathName,
+            intro, question, answers, answer_right as answerRight, `type`, used_num as usedNum, good_num as goodNum, poor_num as poorNum,
+            date_format(create_time, '%Y.%m.%d %T') createTime,date_format(update_time, '%Y.%m.%d %T') updateTime,
+            share_num as shareNum,img_url as imgUrl,create_name as createName,remarks
+        FROM t_grade_question
+        <where>
+            <if test="id !=null and id !=''">
+                and id = #{id}
+            </if>
+            <if test="dictTaskPath !=null and dictTaskPath !=''">
+                and dict_task_path like concat("%",#{dictTaskPath},"%")
+            </if>
+            <if test="dictTaskPathName !=null and dictTaskPathName !=''">
+                and dict_task_path_name like concat("%",#{dictTaskPathName},"%")
+            </if>
+            <if test="dictGradePath !=null and dictGradePath !=''">
+                and dict_grade_path like concat("%",#{dictGradePath},"%")
+            </if>
+            <if test="dictGradePathName !=null and dictGradePathName !=''">
+                and dict_grade_path_name like concat("%",#{dictGradePathName},"%")
+            </if>
+            <if test="dictSourcePath !=null and dictSourcePath !=''">
+                and dict_source_path like concat("%",#{dictSourcePath},"%")
+            </if>
+            <if test="dictSourcePathName !=null and dictSourcePathName !=''">
+                and dict_source_path_name like concat("%",#{dictSourcePathName},"%")
+            </if>
+            <if test="dictTypePath !=null and dictTypePath !=''">
+                and dict_type_path like concat("%",#{dictTypePath},"%")
+            </if>
+            <if test="dictTypePathName !=null and dictTypePathName !=''">
+                and dict_type_path_name like concat("%",#{dictTypePathName},"%")
+            </if>
+            <if test="intro !=null and intro !=''">
+                and intro like concat("%",#{intro},"%")
+            </if>
+            <if test="question !=null and question !=''">
+                and question like concat("%",#{question},"%")
+            </if>
+            <if test="answers !=null and answers !=''">
+                and answers like concat("%",#{answers},"%")
+            </if>
+            <if test="answerRight !=null and answerRight !=''">
+                and answer_right like concat("%",#{answerRight},"%")
+            </if>
+            <if test="type !=null and type!=0 ">
+                and `type` = #{type}
+            </if>
+            <if test="usedNumStart !=null">
+                and used_num &gt;= #{usedNumStart}
+            </if>
+            <if test="usedNumEnd !=null">
+                and used_num &lt; #{usedNumEnd}
+            </if>
+            <if test="goodNumStart !=null">
+                and good_num &gt;= #{goodNumStart}
+            </if>
+            <if test="goodNumEnd !=null">
+                and good_num &lt; #{goodNumEnd}
+            </if>
+            <if test="poorNumStart !=null">
+                and poor_num &gt;= #{poorNumStart}
+            </if>
+            <if test="poorNumEnd !=null">
+                and poor_num &lt; #{poorNumEnd}
+            </if>
+            <if test="shareNumStart !=null">
+                and share_num &gt;= #{shareNumStart}
+            </if>
+            <if test="shareNumEnd !=null">
+                and share_num &lt; #{shareNumEnd}
+            </if>
+            <if test="createTimeStart !=null">
+                and create_time &gt;= #{createTimeStart}
+            </if>
+            <if test="createTimeEnd !=null">
+                and create_time &lt; #{createTimeEnd}
+            </if>
+            <if test="updateTimeStart !=null">
+                and update_time &gt;= #{updateTimeStart}
+            </if>
+            <if test="updateTimeEnd !=null">
+                and update_time &lt; #{updateTimeEnd}
+            </if>
+            <if test="imgUrl !=null and imgUrl !=''">
+                and img_url like concat("%",#{imgUrl},"%")
+            </if>
+            <if test="createName !=null and createName !=''">
+                and create_name like concat("%",#{createName},"%")
+            </if>
+            <if test="remarks !=null and remarks !=''">
+                and remarks like concat("%",#{remarks},"%")
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        LIMIT #{offSet}, #{pageRow}
+    </select>
+
+    <update id="updateMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE t_grade_question
+        <set>
+            <if test="dictTaskPath !=null">
+                dict_task_path = #{dictTaskPath},
+            </if>
+            <if test="dictTaskPathName !=null">
+                dict_task_path_name = #{dictTaskPathName},
+            </if>
+            <if test="dictGradePath !=null">
+                dict_grade_path = #{dictGradePath},
+            </if>
+            <if test="dictGradePathName !=null">
+                dict_grade_path_name = #{dictGradePathName},
+            </if>
+            <if test="dictSourcePath !=null">
+                dict_source_path = #{dictSourcePath},
+            </if>
+            <if test="dictSourcePathName !=null">
+                dict_source_path_name = #{dictSourcePathName},
+            </if>
+            <if test="dictTypePath !=null">
+                dict_type_path = #{dictTypePath},
+            </if>
+            <if test="dictTypePathName !=null">
+                dict_type_path_name = #{dictTypePathName},
+            </if>
+            <if test="intro !=null">
+                intro = #{intro},
+            </if>
+            <if test="question !=null">
+                question = #{question},
+            </if>
+            <if test="answers !=null">
+                answers = #{answers},
+            </if>
+            <if test="answerRight !=null">
+                answer_right = #{answerRight},
+            </if>
+            <if test="type !=null">
+                `type` = #{type},
+            </if>
+            <if test="usedNum !=null">
+                used_num = #{usedNum},
+            </if>
+            <if test="goodNum !=null">
+                good_num = #{goodNum},
+            </if>
+            <if test="poorNum !=null">
+                poor_num = #{poorNum},
+            </if>
+            <if test="createTime !=null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime !=null">
+                update_time = #{updateTime},
+            </if>
+            <if test="shareNum !=null">
+                share_num = #{shareNum},
+            </if>
+            <if test="imgUrl !=null">
+                img_url = #{imgUrl},
+            </if>
+            <if test="createName !=null">
+                create_name = #{createName},
+            </if>
+            <if test="remarks !=null">
+                remarks = #{remarks},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeMysql">
+        delete
+        from t_grade_question
+        where id = #{id}
+    </delete>
+
+</mapper>

@@ -53,7 +53,7 @@
   </div>
 </template>
 <script>
-import { getTreeParents } from '../../utils/index';
+  import { getTreeParents } from '../../utils/index';
   export default {
     data() {
       return {

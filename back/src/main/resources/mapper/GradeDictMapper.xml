@@ -58,7 +58,7 @@
     <delete id="removeMysql">
         delete
         from t_grade_dict
-        where id = #{id}
+        where id = #{userId}
     </delete>
 
 </mapper>
