@@ -3,7 +3,7 @@ package com.heeexy.example.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.config.annotation.RequiresPermissions;
 import com.heeexy.example.dto.session.SessionUserInfo;
-import com.heeexy.example.service.GradeQuestionService;
+import com.heeexy.example.service.FinanceIntroService;
 import com.heeexy.example.service.TokenService;
 import com.heeexy.example.util.CommonUtil;
 import com.heeexy.example.util.DateUtils;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GradeQuestionController {
 
     @Autowired
-    private GradeQuestionService service;
+    private FinanceIntroService service;
 
     @Autowired
     private TokenService tokenService;

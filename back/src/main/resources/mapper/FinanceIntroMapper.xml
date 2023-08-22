@@ -10,6 +10,21 @@
         shares_total_number, shares_allow_total_number, status, load_time,
         create_time, update_time, remarks)
         VALUES
+        (
+        #{id},
+        #{indexType},#{codeNumber},#{sharesName},#{sharesAlise},
+        #{sharesTotalNumber},#{sharesAllowTotalNumber},#{status},#{loadTime},
+        #{createTime},#{updateTime},#{remarks}
+        )
+    </insert>
+
+    <insert id="importMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        INSERT INTO t_finance_intro
+        (id,
+        index_type, code_number, shares_name, shares_alise,
+        shares_total_number, shares_allow_total_number, status, load_time,
+        create_time, update_time, remarks)
+        VALUES
         <foreach collection="list" separator="," item="item" index="index">
             (
             #{item.id},
@@ -44,7 +59,7 @@
         index_type as indexType, code_number as codeNumber, shares_name as sharesName,shares_alise as sharesAlise,
         shares_total_number as sharesTotalNumber, shares_allow_total_number as sharesAllowTotalNumber,
         status,
-        date_format(load_time, '%Y.%m.%d %T') loadTime
+        date_format(load_time, '%Y.%m.%d %T') loadTime,
         date_format(create_time, '%Y.%m.%d %T') createTime,
         date_format(update_time, '%Y.%m.%d %T') updateTime,remarks
         FROM t_finance_intro

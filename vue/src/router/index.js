@@ -83,9 +83,9 @@ export const asyncRouterMap = [
     name: "股票顾问",
     meta: {title: "股票顾问", icon: 'tree'},
     children: [
-        {path: "intro",name: "股票简介",component: _import('share/intro'), meta: {title: "股票简介", icon: 'user'}, menu: 'share' },
-        {path: "update",name: "更新状态",component: _import('share/update'), meta: {title: "更新状态", icon: 'user'}, menu: 'share' },
-        {path: "echarts",name: "股票曲线",component: _import('share/echarts'), meta: {title: "股票曲线", icon: 'user'}, menu: 'share' }
+        {path: "intro",name: "股票简介",component: _import('share/intro'), meta: {title: "股票简介", icon: 'user'}, menu: 'intro' },
+        {path: "update",name: "更新状态",component: _import('share/update'), meta: {title: "更新状态", icon: 'user'}, menu: 'intro' },
+        {path: "echarts",name: "股票曲线",component: _import('share/echarts'), meta: {title: "股票曲线", icon: 'user'}, menu: 'intro' }
     ]
   },
   //--------------

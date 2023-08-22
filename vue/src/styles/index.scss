@@ -57,3 +57,21 @@ a:hover {
 .app-container {
   padding: 20px;
 }
+.text-ellipsis{
+  white-space: nowrap; word-break: keep-all; overflow: hidden; text-overflow: ellipsis;
+}
+.text-color-white{
+  color: white;
+}
+.text-p-t-5{
+  padding-top: 5px;
+}
+.text-p-b-5{
+  padding-bottom: 5px;
+}
+.bg-67C23A{
+  background-color: #67C23A;
+}
+.bg-F56C6C{
+  background-color: #F56C6C;
+}
