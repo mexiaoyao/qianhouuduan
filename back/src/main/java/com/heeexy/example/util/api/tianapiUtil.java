@@ -4,6 +4,7 @@ import com.heeexy.example.util.StringTools;
 import lombok.extern.slf4j.Slf4j;
 import sun.net.www.protocol.http.HttpURLConnection;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -83,44 +84,37 @@ public class tianapiUtil {
 
 
     public static String getApi(List<String> account){
-        String tianapi_data = "";
-        String accountStr = StringTools.arrToString(account);
-        if(!"".equals(accountStr)){
-            try {
-                URL url = new URL( "https://apis.tianapi.com/finance/index");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                conn.setDoOutput(true);
-                conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
-                OutputStream outputStream = conn.getOutputStream();
-                String content = "key=bdaed4f7b2039e9e1fbc127988a9a046&code="+ accountStr +"&list=1";
-                outputStream.write(content.getBytes());
-                outputStream.flush();
-                outputStream.close();
-                InputStream inputStream = conn.getInputStream();
-                InputStreamReader inputStreamReader = new InputStreamReader (inputStream,"utf-8");
-                BufferedReader bufferedReader = new BufferedReader (inputStreamReader);
-                StringBuilder tianapi = new StringBuilder();
-                String temp = null;
-                while ( null != (temp = bufferedReader.readLine())){
-                    tianapi.append(temp);
-                }
-                tianapi_data = tianapi.toString();
-                inputStream.close();
-            } catch (Exception e) {
-                log.info("执行异常：apis.tianapi.com");
+        String msg = "";
+        try {
+            URL url = new URL("https://apis.tianapi.com/finance/index?key=bdaed4f7b2039e9e1fbc127988a9a046&code=sh600291,sz002400&list=1"); // 替换为你要请求的URL
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+            System.out.println("Response Code: " + responseCode);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            StringBuilder response = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
             }
+            reader.close();
+
+            System.out.println("Response Body: " + response.toString());
+
+            connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return "ok";
+        return msg;
     }
 
     public static void main(String[] args){
 
         List<String> account = new ArrayList<String>();
         account.add("sh600291");
-        account.add("sh600291");
+        account.add("sz002400");
 
         String ll = getApi(account);
 
