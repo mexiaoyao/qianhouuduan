@@ -26,7 +26,6 @@ public class FinanceIntroController {
     @RequiresPermissions("intro:import")
     @PostMapping("/import")
     public JSONObject importDo(@RequestPart("file") MultipartFile file) {
-        // @RequestParam("file")
         return service.importDo(file);
     }
 

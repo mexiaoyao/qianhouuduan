@@ -4,7 +4,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.dao.FinanceIntroDao;
 import com.heeexy.example.util.CommonUtil;
+import com.heeexy.example.util.DateUtils;
+import com.heeexy.example.util.StringTools;
+import com.heeexy.example.util.constants.Constants;
 import com.heeexy.example.util.excel.ExcelUtils;
+import com.heeexy.example.util.model.FinanceIntro;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,17 +33,24 @@ public class FinanceIntroService {
 
     @Transactional(rollbackFor = Exception.class)
     public JSONObject importDo(MultipartFile file) {
+        int result = 0;
         try {
-            Map<String, JSONArray> map = ExcelUtils.readFileManySheet(file);
-            map.forEach((key, value) -> {
-                System.out.println("Sheet名称：" + key);
-                System.out.println("Sheet数据：" + value);
-                System.out.println("----------------------");
-            });
+            List<FinanceIntro> list = ExcelUtils.readMultipartFile(file, FinanceIntro.class);
+            for(FinanceIntro financeIntro : list){
+                 financeIntro.setId(StringTools.getUUid());
+                financeIntro.setCreateTime(DateUtils.getDate());
+                financeIntro.setStatus(Constants.TWO_BYTE);
+                log.info(financeIntro.toString());
+            };
+            result = mysqlDao.batchInsert(list);
         }catch (Exception e){
             log.error("导入失败："+e.getMessage());
         }
-        return CommonUtil.successJson();
+        if(result>0){
+            return CommonUtil.successJson();
+        }else{
+            return CommonUtil.errorJson(G_add001);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)

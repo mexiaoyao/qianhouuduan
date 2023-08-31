@@ -18,7 +18,7 @@
         )
     </insert>
 
-    <insert id="importMysql" parameterType="com.alibaba.fastjson.JSONObject">
+    <insert id="batchInsert" parameterType="java.util.List">
         INSERT INTO t_finance_intro
         (id,
         index_type, code_number, shares_name, shares_alise,
