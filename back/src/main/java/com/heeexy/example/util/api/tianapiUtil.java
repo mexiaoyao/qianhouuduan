@@ -110,6 +110,14 @@ public class tianapiUtil {
         return msg;
     }
 
+    public static String getParmes(String response){
+
+
+        return "";
+    }
+
+
+
     public static void main(String[] args){
 
         List<String> account = new ArrayList<String>();
