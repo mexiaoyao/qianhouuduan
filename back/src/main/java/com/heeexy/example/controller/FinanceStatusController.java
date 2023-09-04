@@ -3,7 +3,6 @@ package com.heeexy.example.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.config.annotation.RequiresPermissions;
 import com.heeexy.example.service.FinanceIntroService;
-import com.heeexy.example.service.FinanceStatusService;
 import com.heeexy.example.util.CommonUtil;
 import com.heeexy.example.util.DateUtils;
 import com.heeexy.example.util.StringTools;
@@ -13,10 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/intro")
-public class FinanceIntroController {
+public class FinanceStatusController {
 
     @Autowired
-    private FinanceStatusService service;
+    private FinanceIntroService service;
 
     @RequiresPermissions("intro:import")
     @PostMapping("/import")

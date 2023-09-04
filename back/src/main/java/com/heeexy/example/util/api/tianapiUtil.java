@@ -161,11 +161,11 @@ public class tianapiUtil {
 
     public static void main(String[] args){
 
-        List<String> account = new ArrayList<String>();
-        account.add("sh600291");
-        account.add("sz002400");
-
-        String ll = getApi(account);
+//        List<String> account = new ArrayList<String>();
+//        account.add("sh600291");
+//        account.add("sz002400");
+//
+//        String ll = getApi(account);
 
     }
 }
