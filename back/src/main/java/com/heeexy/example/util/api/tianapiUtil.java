@@ -1,15 +1,17 @@
 package com.heeexy.example.util.api;
 
-import com.heeexy.example.util.StringTools;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.heeexy.example.util.model.FinanceMap;
 import lombok.extern.slf4j.Slf4j;
-import sun.net.www.protocol.http.HttpURLConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: zl
@@ -91,32 +93,71 @@ public class tianapiUtil {
             connection.setRequestMethod("GET");
 
             int responseCode = connection.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
+            if(responseCode==200){
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                StringBuilder response = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String line;
-            StringBuilder response = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
+                System.out.println("Response Body: " + response.toString());
+                connection.disconnect();
+                getParmes( account, response.toString());
+            }else{
+
             }
-            reader.close();
-
-            System.out.println("Response Body: " + response.toString());
-
-            connection.disconnect();
+            System.out.println("Response Code: " + responseCode);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return msg;
     }
 
-    public static String getParmes(String response){
-
-
-        return "";
+    public static List<FinanceMap> getParmes(List<String> account, String response){
+        List<FinanceMap> ret = new ArrayList<FinanceMap>();
+        JSONObject jsonObject = jsonGetStr(response);
+        if(jsonObject.getIntValue("code")==200){
+            JSONObject result = jsonGetStr(jsonObject.getString("result"));
+            for(String str : account){
+                FinanceMap financeMap = new FinanceMap();
+                String financeInfo = result.getString(str);
+                String[] financeArr = financeInfo.split(",");
+                Map<String, Object> map = new HashMap<>();
+                map.put("todayOpenPrice",financeArr[1]);
+                map.put("yesterdayClosePrice",financeArr[2]);
+                map.put("todayMaxPrice",financeArr[4]);
+                map.put("todayMinPrice",financeArr[6]);
+                map.put("dealAmount",financeArr[9]);
+                map.put("dealAharesNumber",financeArr[8]);
+                map.put("sharesDate",financeArr[30]);
+                map.put("code",financeArr[32]);
+                financeMap.setCode("ok");
+                financeMap.setAccount(str);
+                financeMap.setMap(map);
+                ret.add(financeMap);
+            }
+        }else{
+            jsonObject.put("code","error");
+            jsonObject.put("msg",jsonObject.getString("msg"));
+        }
+        return ret;
     }
 
-
+    /**
+     * str的格式
+     * String str = "{\"name\":\"Tom\",\"age\":20}";
+     * **/
+    public static JSONObject jsonGetStr(String str){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = JSON.parseObject(str);
+        }catch(Exception e){
+            e.getMessage();
+        }
+        return jsonObject;
+    }
 
     public static void main(String[] args){
 
