@@ -66,6 +66,7 @@
       </el-table-column>
       <el-table-column fixed="right" align="center" label="操作" width="200" >
         <template slot-scope="scope">
+          <el-button type="primary" size="mini" icon="EyeOutlined" @click="detailAction(scope.row)" v-if="scope.row.status==1" v-permission="'intro:status'" title="详情" />
           <el-button type="danger" size="mini" icon="el-icon-turn-off" @click="statusAction(scope.row,2)" v-if="scope.row.status==1" v-permission="'intro:status'" title="下架" />
           <el-button type="success" size="mini" icon="el-icon-open" @click="statusAction(scope.row,1)" v-if="scope.row.status==2" v-permission="'intro:status'" title="上架" />
           <el-button type="warning" size="mini" icon="el-icon-edit" @click="showUpdate(scope.row)" v-if="scope.row.status==2" v-permission="'intro:update'" title="编辑" />

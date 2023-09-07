@@ -3,89 +3,43 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.heeexy.example.dao.FinanceStatusDao">
 
-    <select id="findDeptByDeptnoOne" parameterType="integer" resultMap="deptMapOne">
-		select * from dept where deptno=#{deptno}
-	</select>
-    <resultMap type="Dept" id="deptMapOne">
-        <id property="deptno" column="deptno" />
-        <collection property="emps" column="deptno" javaType="java.util.ArrayList" ofType="Emp" select="findEmps" />
-    </resultMap>
-    <select id="findEmps" parameterType="integer" resultType="Emp">
-		select * from emp where deptno=#{deptno}
-	</select>
-
-    <insert id="addMysql" parameterType="com.alibaba.fastjson.JSONObject">
-        INSERT INTO t_finance_intro
-        (id,
-        index_type, code_number, shares_name, shares_alise,
-        shares_total_number, shares_allow_total_number, status, load_time,
-        create_time, update_time, remarks)
-        VALUES
-        (
-        #{id},
-        #{indexType},#{codeNumber},#{sharesName},#{sharesAlise},
-        #{sharesTotalNumber},#{sharesAllowTotalNumber},#{status},#{loadTime},
-        #{createTime},#{updateTime},#{remarks}
-        )
-    </insert>
-
-    <insert id="batchInsert" parameterType="java.util.List">
-        INSERT INTO t_finance_intro
-        (id,
-        index_type, code_number, shares_name, shares_alise,
-        shares_total_number, shares_allow_total_number, status, load_time,
-        create_time, update_time, remarks)
-        VALUES
-        <foreach collection="list" separator="," item="item" index="index">
-            (
-            #{item.id},
-            #{item.indexType},#{item.codeNumber},#{item.sharesName},#{item.sharesAlise},
-            #{item.sharesTotalNumber},#{item.sharesAllowTotalNumber},#{item.status},#{item.loadTime},
-            #{item.createTime},#{item.updateTime},#{item.remarks}
-            )
-        </foreach>
-    </insert>
-
     <select id="countMysql" resultType="Integer">
         SELECT count(0)
-        FROM t_finance_intro
+        FROM t_finance_update
         <where>
             <if test="id !=null and id !=''">
                 and id = #{id}
             </if>
-            <if test="indexType !=null and indexType!=0 ">
-                and index_type = #{indexType}
+            <if test="sharesId !=null and sharesId!=0 ">
+                and shares_id = #{sharesId}
             </if>
-            <if test="codeNumber !=null and codeNumber !=''">
-                and code_number like concat("%",#{codeNumber},"%")
+            <if test="status !=null and status !=''">
+                and status = #{status}
             </if>
-            <if test="sharesName !=null and sharesName !=''">
-                and shares_name like concat("%",#{sharesName},"%")
+            <if test="remarks !=null and remarks !=''">
+                and remarks like concat("%",#{remarks},"%")
             </if>
         </where>
     </select>
-    <select id="listMysql" resultType="com.alibaba.fastjson.JSONObject" resultMap="deptMapOne">
+    <select id="listMysql" resultType="com.alibaba.fastjson.JSONObject">
         SELECT
         id,
-        index_type as indexType, code_number as codeNumber, shares_name as sharesName,shares_alise as sharesAlise,
-        shares_total_number as sharesTotalNumber, shares_allow_total_number as sharesAllowTotalNumber,
-        status,
-        date_format(load_time, '%Y.%m.%d %T') loadTime,
+        shares_id as sharesId, status,
         date_format(create_time, '%Y.%m.%d %T') createTime,
-        date_format(update_time, '%Y.%m.%d %T') updateTime,remarks
-        FROM t_finance_intro
+        remarks,fail_num as failNum
+        FROM t_finance_update
         <where>
             <if test="id !=null and id !=''">
                 and id = #{id}
             </if>
-            <if test="indexType !=null and indexType!=0 ">
-                and index_type = #{indexType}
+            <if test="sharesId !=null and sharesId!=0 ">
+                and shares_id = #{sharesId}
             </if>
-            <if test="codeNumber !=null and codeNumber !=''">
-                and code_number like concat("%",#{codeNumber},"%")
+            <if test="status !=null and status !=''">
+                and status = #{status}
             </if>
-            <if test="sharesName !=null and sharesName !=''">
-                and shares_name like concat("%",#{sharesName},"%")
+            <if test="remarks !=null and remarks !=''">
+                and remarks like concat("%",#{remarks},"%")
             </if>
         </where>
         ORDER BY create_time DESC
@@ -93,37 +47,10 @@
     </select>
 
     <update id="updateMysql" parameterType="com.alibaba.fastjson.JSONObject">
-        UPDATE t_finance_intro
+        UPDATE t_finance_update
         <set>
-            <if test="indexType !=null">
-                index_type = #{indexType},
-            </if>
-            <if test="codeNumber !=null">
-                code_number = #{codeNumber},
-            </if>
-            <if test="sharesName !=null">
-                shares_name = #{sharesName},
-            </if>
-            <if test="sharesAlise !=null">
-                shares_alise = #{sharesAlise},
-            </if>
-            <if test="sharesTotalNumber !=null">
-                shares_total_number = #{sharesTotalNumber},
-            </if>
-            <if test="sharesAllowTotalNumber !=null">
-                shares_allow_total_number = #{sharesAllowTotalNumber},
-            </if>
             <if test="status !=null">
                 status = #{status},
-            </if>
-            <if test="loadTime !=null">
-                load_time = #{loadTime},
-            </if>
-            <if test="createTime !=null">
-                create_time = #{createTime},
-            </if>
-            <if test="updateTime !=null">
-                update_time = #{updateTime},
             </if>
             <if test="remarks !=null">
                 remarks = #{remarks},
@@ -131,11 +58,4 @@
         </set>
         WHERE id = #{id}
     </update>
-
-    <delete id="removeMysql">
-        delete
-        from t_finance_intro
-        where id = #{id}
-    </delete>
-
 </mapper>
