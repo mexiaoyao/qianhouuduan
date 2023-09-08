@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FinanceIntroController {
 
     @Autowired
-    private FinanceStatusService service;
+    private FinanceIntroService service;
 
     @RequiresPermissions("intro:import")
     @PostMapping("/import")
