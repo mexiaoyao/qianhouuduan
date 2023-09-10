@@ -66,7 +66,7 @@
       </el-table-column>
       <el-table-column fixed="right" align="center" label="操作" width="200" >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="EyeOutlined" @click="detailAction(scope.row)" v-if="scope.row.status==1" v-permission="'intro:status'" title="详情" />
+          <el-button type="primary" size="mini" icon="el-icon-view" @click="detailAction(scope.row)" v-if="scope.row.status==1" v-permission="'intro:status'" title="详情" />
           <el-button type="danger" size="mini" icon="el-icon-turn-off" @click="statusAction(scope.row,2)" v-if="scope.row.status==1" v-permission="'intro:status'" title="下架" />
           <el-button type="success" size="mini" icon="el-icon-open" @click="statusAction(scope.row,1)" v-if="scope.row.status==2" v-permission="'intro:status'" title="上架" />
           <el-button type="warning" size="mini" icon="el-icon-edit" @click="showUpdate(scope.row)" v-if="scope.row.status==2" v-permission="'intro:update'" title="编辑" />
@@ -75,45 +75,14 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="420px">
-      <el-form class="small-space" :model="form" label-position="right" label-width="120px">
-        <el-form-item label="指数">
-          <el-select v-model="form.indexType" style="width:100%">
-            <el-option label="沪指SH" :value="1"></el-option>
-            <el-option label="深指SZ" :value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="股票代码">
-          <el-input type="text" style="width:100%" v-model="form.codeNumber"  maxlength="6"></el-input>
-        </el-form-item>
-        <el-form-item label="股票名称">
-          <el-input type="text" style="width:100%" v-model="form.sharesName"  maxlength="100"></el-input>
-        </el-form-item>
-        <el-form-item label="股票别名">
-          <el-input type="text" style="width:100%" v-model="form.sharesAlise"  maxlength="100"></el-input>
-        </el-form-item>
-        <el-form-item label="股票总股数">
-          <el-input-number style="width:100%" v-model="form.sharesTotalNumber"></el-input-number>
-        </el-form-item>
-        <el-form-item label="可流动股票股数">
-          <el-input-number style="width:100%" v-model="form.sharesAllowTotalNumber"></el-input-number>
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input type="text" style="width:100%" v-model="form.remarks"  maxlength="100">
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button v-if="dialogStatus==='create'" type="success" @click="createForm">创建</el-button>
-        <el-button v-if="dialogStatus==='update'" type="success" @click="updateForm">编辑</el-button>
-        <el-button type="primary" v-else @click="updateForm">修改</el-button>
-      </div>
-    </el-dialog>
+    <AddModal :visible="dialogFormVisible" @cancel="cancelAction" @ok="okDialog" :row="itemObj" ></AddModal>
   </div>
 </template>
 <script>
+  import AddModal from "./dialog/update.vue";
   export default {
+
+    components: { AddModal },
     data() {
       return {
         header: {
@@ -126,22 +95,11 @@
         list: [],//表格的数据
         listLoading: false,//数据加载等待动画
 
-        dialogStatus: 'create',
         dialogFormVisible: false,
-        textMap: {
-          update: '编辑',
-          create: '添加'
-        },
-        form: {
-          id: "",
-          indexType:1,
-          codeNumber:"",
-          sharesName:"",
-          sharesAlise:"",
-          sharesTotalNumber:0,
-          sharesAllowTotalNumber:0,
-          remarks:""
-        },
+
+        itemObj: {},
+
+        dialogDetaiVisible:false,
       }
     },
     created() {
@@ -160,8 +118,6 @@
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-
-
       getList() {
         //查询列表
         if (!this.hasPerm('intro:list')) {
@@ -183,38 +139,24 @@
         //表格序号
         return $index + 1
       },
-      showCreate(row) {
+      showCreate() {
         //显示新增对话框
-        this.dialogStatus = "create"
-        this.dialogFormVisible = true
+        this.dialogFormVisible = true;
+        this.itemObj = {};
       },
       showUpdate(row) {
         //显示修改对话框
-        this.form = row;
-        this.dialogStatus = "update"
-        this.dialogFormVisible = true
+        this.dialogFormVisible = true;
+        this.itemObj = row;
       },
-      createForm() {
-        //保存新文章
-        this.api({
-          url: "/intro/add",
-          method: "post",
-          data: this.form
-        }).then(() => {
-          this.getList();
-          this.dialogFormVisible = false
-        })
+      cancelAction() {
+        //显示修改对话框
+        this.dialogFormVisible = false;
+        this.itemObj = {};
       },
-      updateForm() {
-        //修改文章
-        this.api({
-          url: "/intro/update",
-          method: "post",
-          data: this.form
-        }).then(() => {
-          this.getList();
-          this.dialogFormVisible = false
-        })
+      okDialog(){
+        this.dialogFormVisible = false;
+        this.getList();
       },
       statusAction(row, status){
           let _vue = this;
