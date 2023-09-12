@@ -75,7 +75,7 @@
       </el-table-column>
     </el-table>
 
-    <AddModal :visible="dialogFormVisible" @cancel="cancelAction" @ok="okDialog" :row="itemObj" ></AddModal>
+    <AddModal :visible.sync="dialogFormVisible" @cancel="cancelAction" @ok="okDialog" :row="itemObj" ></AddModal>
   </div>
 </template>
 <script>
@@ -152,7 +152,6 @@
       cancelAction() {
         //显示修改对话框
         this.dialogFormVisible = false;
-        this.itemObj = {};
       },
       okDialog(){
         this.dialogFormVisible = false;
