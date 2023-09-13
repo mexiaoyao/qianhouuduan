@@ -1,6 +1,6 @@
 <template>
-      <el-dialog :title="''==form.id?'添加':'编辑'" :visible.sync="visible" @cancel="cancelClick" @open="open" @close="close" width="420px">
-        <el-form class="small-space" :model="form" :rules="ruleFormRules" ref="ruleForm" label-position="right" label-width="120px">
+      <el-dialog :title="''==form.id?'添加':'编辑'" :visible.sync="isShow" :before-close="cancelClick" @cancel="cancelClick" width="420px">
+        <el-form class="small-space" :model="form" :rules="rules" ref="ruleForm" label-position="right" label-width="120px">
           <el-form-item label="指数" prop="indexType">
             <el-select v-model="form.indexType" style="width:100%">
               <el-option label="沪指SH" :value="1"></el-option>
@@ -49,20 +49,18 @@
       },
       data() {
         return {
-            form: {
-                id: null,
-                indexType:1,
-                codeNumber:null,
-                sharesName:null,
-                sharesAlise:null,
-                sharesTotalNumber:null,
-                sharesAllowTotalNumber:null,
-                remarks:null
-            }
+            isShow:false,
+            form: {}
+        }
+      },
+      watch:{
+        visible(newVal) {
+            this.isShow = newVal;
+            if (newVal)  this.form = this.row;
         }
       },
       computed:{
-        ruleFormRules(){
+        rules(){
             return {
                 indexType: [{ required: true, message: "指数类型不可为空", trigger: "change" }],
                 codeNumber: [
@@ -94,14 +92,6 @@
                 remarks: [{ required: true, message: "备注不可为空", trigger: "blur" }],
             };
         }
-        
-      },
-      watch:{
-        visible(newVal, oldVal) {
-            if (newVal && null!=this.row) {
-                this.form = this.row;
-            }
-        },
       },
       methods: {
         cancelClick() {
@@ -139,16 +129,6 @@
           }).then(() => {
             _this.$emit("ok");
           })
-        },
-        open(){
-            this.$nextTick(()=>{
-                this.$refs.ruleForm.resetFields();
-            })
-        },
-        close(){
-            this.$nextTick(()=>{
-                this.$refs.ruleForm.resetFields();
-            })
         },
       }
     }

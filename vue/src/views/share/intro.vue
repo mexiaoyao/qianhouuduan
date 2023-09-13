@@ -16,13 +16,8 @@
           <el-input allowClear placeholder="请输入股票名称" v-model.trim="parmes.sharesName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="plus" @click="getList" v-permission="'intro:list'">查询</el-button>
-          <el-button type="primary" icon="plus" @click="showCreate" v-permission="'intro:add'">添加</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-upload action="/api/intro/import" :headers="header" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed">
-            <el-button type="primary">批量上传</el-button>
-          </el-upload>
+          <el-button type="primary" @click="getList" v-permission="'intro:list'">查询</el-button>
+          <el-button type="primary" @click="showCreate" v-permission="'intro:add'">添加</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -75,19 +70,15 @@
       </el-table-column>
     </el-table>
 
-    <AddModal :visible.sync="dialogFormVisible" @cancel="cancelAction" @ok="okDialog" :row="itemObj" ></AddModal>
+    <AddModal :visible.sync="updateVisible" @cancel="cancelAction" @ok="okDialog" :row="itemObj" ></AddModal>
   </div>
 </template>
 <script>
   import AddModal from "./dialog/update.vue";
   export default {
-
     components: { AddModal },
     data() {
       return {
-        header: {
-          token: localStorage.getItem("token"),
-        },
         parmes:{
           indexType:0
         },
@@ -95,8 +86,7 @@
         list: [],//表格的数据
         listLoading: false,//数据加载等待动画
 
-        dialogFormVisible: false,
-
+        updateVisible: false,
         itemObj: {},
 
         dialogDetaiVisible:false,
@@ -106,29 +96,13 @@
       this.getList();
     },
     methods: {
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-      },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
-      },
       getList() {
         //查询列表
         if (!this.hasPerm('intro:list')) {
           return
         }
         this.listLoading = true;
-        this.api({
-          url: "/intro/list",
-          method: "post",
-          data: this.parmes
-        }).then(data => {
+        this.api({url: "/intro/list", method: "post", data: this.parmes}).then(data => {
           this.listLoading = false;
           this.list = data.list;
           this.totalCount = data.totalCount;
@@ -141,20 +115,29 @@
       },
       showCreate() {
         //显示新增对话框
-        this.dialogFormVisible = true;
-        this.itemObj = {};
+        this.itemObj = {
+          id: "",
+          indexType:1,
+          codeNumber:"",
+          sharesName:"",
+          sharesAlise:"",
+          sharesTotalNumber:0,
+          sharesAllowTotalNumber:0,
+          remarks:""
+        };
+        this.updateVisible = true;
       },
       showUpdate(row) {
         //显示修改对话框
-        this.dialogFormVisible = true;
-        this.itemObj = row;
+        Object.assign(this.itemObj, row)
+        this.updateVisible = true;
       },
       cancelAction() {
         //显示修改对话框
-        this.dialogFormVisible = false;
+        this.updateVisible = false;
       },
       okDialog(){
-        this.dialogFormVisible = false;
+        this.updateVisible = false;
         this.getList();
       },
       statusAction(row, status){
