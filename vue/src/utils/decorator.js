@@ -69,7 +69,17 @@ export function zhengshuCheck(rule, value, callbackFn) {
 export function booleanCheck(rule, value, callbackFn) {
     console.log("value:" + value);
     if (!value) {
-        callbackFn("请请确认");
+        callbackFn("请确认");
+        return;
+    }
+    callbackFn();
+}
+
+// 节假日过滤
+export function holidayCheck(rule, value, callbackFn) {
+    console.log("value:" + value);
+    if (!value || value==0) {
+        callbackFn("请选择正确的节假日");
         return;
     }
     callbackFn();

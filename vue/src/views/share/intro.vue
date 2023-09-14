@@ -18,6 +18,7 @@
         <el-form-item>
           <el-button type="primary" @click="getList" v-permission="'intro:list'">查询</el-button>
           <el-button type="primary" @click="showCreate" v-permission="'intro:add'">添加</el-button>
+          <el-button type="primary" @click="calendarShow" v-permission="'intro:add'">日历设置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -71,12 +72,14 @@
     </el-table>
 
     <AddModal :visible.sync="updateVisible" @cancel="cancelAction" @ok="okDialog" :row="itemObj" ></AddModal>
+    <CalendarModal :visible.sync="calendarVisible" @cancel="calendarVisible=false"></CalendarModal>
   </div>
 </template>
 <script>
   import AddModal from "./dialog/update.vue";
+  import CalendarModal from "./dialog/calendar.vue";
   export default {
-    components: { AddModal },
+    components: { AddModal, CalendarModal },
     data() {
       return {
         parmes:{
@@ -89,13 +92,18 @@
         updateVisible: false,
         itemObj: {},
 
-        dialogDetaiVisible:false,
+        dialogDetaiVisible: false,
+        calendarVisible: false, //日历弹框
       }
     },
     created() {
       this.getList();
     },
     methods: {
+      //日历弹框
+      calendarShow(){
+        this.calendarVisible = true;
+      },
       getList() {
         //查询列表
         if (!this.hasPerm('intro:list')) {
