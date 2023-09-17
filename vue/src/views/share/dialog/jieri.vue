@@ -23,6 +23,10 @@
           visible:{
               type:Boolean,
               default: false
+          },
+          day:{
+              type: String,
+              default: ""
           }
         },
         data() {
@@ -54,6 +58,9 @@
         watch:{
           visible(newVal) {
               this.isShow = newVal;
+              if(newVal){
+                Object.assign(this.form,{workDate: this.day});
+              }
           }
         },
         methods: {
@@ -64,7 +71,10 @@
             if(this.$refs.ruleForm){
               this.$refs.ruleForm.validate((valid) => {
                 if (valid) {
-                  alert('submit!');
+                  this.api({url: "/intro/workadd", method: "post", data: this.form}).then(res => {
+                      this.$message.success('操作成功');
+                      this.$emit("cancel");
+                  })
                 } else {
                   console.log('error submit!!');
                   return false;

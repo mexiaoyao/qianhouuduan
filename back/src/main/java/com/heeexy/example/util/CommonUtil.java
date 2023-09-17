@@ -64,6 +64,14 @@ public class CommonUtil {
         return result;
     }
 
+    public static JSONObject successList(List<JSONObject> list) {
+        JSONObject result = successJson();
+        JSONObject info = new JSONObject();
+        info.put("list", list);
+        result.put("info", info);
+        return result;
+    }
+
     /**
      * 查询分页结果后的封装工具方法
      *

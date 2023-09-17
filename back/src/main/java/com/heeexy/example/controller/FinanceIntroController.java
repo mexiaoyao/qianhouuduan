@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.config.annotation.RequiresPermissions;
 import com.heeexy.example.service.FinanceIntroService;
 import com.heeexy.example.service.FinanceStatusService;
+import com.heeexy.example.service.WorkDateService;
 import com.heeexy.example.util.CommonUtil;
 import com.heeexy.example.util.DateUtils;
 import com.heeexy.example.util.StringTools;
@@ -17,6 +18,9 @@ public class FinanceIntroController {
 
     @Autowired
     private FinanceIntroService service;
+
+    @Autowired
+    private WorkDateService workService;
 
     @RequiresPermissions("intro:import")
     @PostMapping("/import")
@@ -67,4 +71,27 @@ public class FinanceIntroController {
         CommonUtil.hasAllRequired(requestJson, "id");
         return service.removeMysql(requestJson);
     }
+
+    @RequiresPermissions("intro:workadd")
+    @PostMapping("/workadd")
+    public JSONObject workadd(@RequestBody JSONObject requestJson) {
+        CommonUtil.hasAllRequired(requestJson, "workDate, holiday");
+        requestJson.put("id", StringTools.getUUid());
+        return workService.addMysql(requestJson);
+    }
+
+    @RequiresPermissions("intro:workList")
+    @PostMapping("/workList")
+    public JSONObject workList() {
+        return workService.listAllMysql();
+    }
+
+    @RequiresPermissions("intro:remove")
+    @PostMapping("/remove")
+    public JSONObject remove(@RequestBody JSONObject requestJson) {
+        CommonUtil.hasAllRequired(requestJson, "id");
+        return workService.removeMysql(requestJson);
+    }
+
+
 }

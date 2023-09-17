@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.heeexy.example.dao.WorkDateDao">
+
+    <insert id="addMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        INSERT INTO t_work_date
+        (id, work_date, holiday)
+        VALUES
+        (#{id}, #{workDate}, #{holiday})
+    </insert>
+
+    <select id="countMysql" resultType="Integer">
+        SELECT count(0)
+        FROM t_work_date
+        <where>
+            <if test="id !=null and id !=''">
+                and id = #{id}
+            </if>
+            <if test="workDate !=null and workDate!='' ">
+                and work_date = #{workDate}
+            </if>
+            <if test="holiday !=null">
+                and holiday = #{holiday}
+            </if>
+        </where>
+    </select>
+    <select id="listMysql" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT id, work_date as workDate, holiday
+        FROM t_work_date
+        <where>
+            <if test="id !=null and id !=''">
+                and id = #{id}
+            </if>
+            <if test="workDate !=null and workDate!='' ">
+                and work_date = #{workDate}
+            </if>
+            <if test="holiday !=null and holiday !=''">
+                and holiday = #{holiday}
+            </if>
+        </where>
+        ORDER BY work_date DESC
+        LIMIT #{offSet}, #{pageRow}
+    </select>
+
+    <select id="listAllMysql" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT id, work_date as workDate, holiday FROM t_work_date ORDER BY work_date DESC
+    </select>
+
+    <update id="updateMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE t_work_date
+        <set>
+            <if test="workDate !=null and workDate !=''">
+                work_date = #{workDate},
+            </if>
+            <if test="holiday !=null">
+                holiday = #{holiday},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeMysql">
+        delete
+        from t_work_date
+        where id = #{id}
+    </delete>
+
+</mapper>
