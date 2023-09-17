@@ -22,6 +22,9 @@ public class FinanceIntroController {
     @Autowired
     private WorkDateService workService;
 
+    @Autowired
+    private FinanceStatusService statusService;
+
     @RequiresPermissions("intro:import")
     @PostMapping("/import")
     public JSONObject importDo(@RequestPart("file") MultipartFile file) {
@@ -91,6 +94,19 @@ public class FinanceIntroController {
     public JSONObject remove(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "id");
         return workService.removeMysql(requestJson);
+    }
+
+    @RequiresPermissions("intro:statusList")
+    @PostMapping("/statusList")
+    public JSONObject statusList(@RequestBody JSONObject requestJson) {
+        return statusService.listMysql(requestJson);
+    }
+
+    @RequiresPermissions("intro:statusDelete")
+    @PostMapping("/statusDelete")
+    public JSONObject statusDelete(@RequestBody JSONObject requestJson) {
+        CommonUtil.hasAllRequired(requestJson, "id");
+        return service.removeMysql(requestJson);
     }
 
 

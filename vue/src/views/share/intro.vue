@@ -73,11 +73,13 @@
 
     <AddModal :visible.sync="updateVisible" @cancel="cancelAction" @ok="okDialog" :row="itemObj" ></AddModal>
     <CalendarModal :visible.sync="calendarVisible" @cancel="calendarVisible=false"></CalendarModal>
+    <StatusModal :visible.sync="statusVisible" @cancel="statusCancel" @ok="okStatus" :row="itemObj" ></StatusModal>
   </div>
 </template>
 <script>
   import AddModal from "./dialog/update.vue";
   import CalendarModal from "./dialog/calendar.vue";
+  import StatusModal from "./dialog/updateList.vue";
   export default {
     components: { AddModal, CalendarModal },
     data() {
@@ -94,6 +96,7 @@
 
         dialogDetaiVisible: false,
         calendarVisible: false, //日历弹框
+        statusVisible: false, //更新详情
       }
     },
     created() {
@@ -144,8 +147,19 @@
         //显示修改对话框
         this.updateVisible = false;
       },
-      okDialog(){
+      detailAction(row){
+        Object.assign(this.itemObj, row);
+        this.statusVisible = true;
+      },
+      statusCancel(){
+        this.statusVisible = false;
+      },
+      okStatus(){
         this.updateVisible = false;
+        this.getList();
+      },
+      okDialog(){
+        this.statusVisible = false;
         this.getList();
       },
       statusAction(row, status){
