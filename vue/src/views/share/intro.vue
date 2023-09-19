@@ -81,7 +81,7 @@
   import CalendarModal from "./dialog/calendar.vue";
   import StatusModal from "./dialog/updateList.vue";
   export default {
-    components: { AddModal, CalendarModal },
+    components: { AddModal, CalendarModal, StatusModal },
     data() {
       return {
         parmes:{

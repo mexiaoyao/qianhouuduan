@@ -58,4 +58,10 @@
         </set>
         WHERE id = #{id}
     </update>
+
+    <delete id="removeMysql">
+        delete
+        from t_finance_update
+        where id = #{id}
+    </delete>
 </mapper>

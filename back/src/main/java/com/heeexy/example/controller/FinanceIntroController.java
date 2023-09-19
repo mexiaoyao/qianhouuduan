@@ -106,7 +106,7 @@ public class FinanceIntroController {
     @PostMapping("/statusDelete")
     public JSONObject statusDelete(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "id");
-        return service.removeMysql(requestJson);
+        return statusService.removeMysql(requestJson);
     }
 
 
