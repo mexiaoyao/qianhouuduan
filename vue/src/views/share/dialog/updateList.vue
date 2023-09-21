@@ -14,12 +14,12 @@
             </template>
           </el-table-column>
           <el-table-column align="center" prop="createTime" label="生成时间" width="170"/>
+          <el-table-column align="center" prop="failNum" label="失败次数" width="170"/>
           <el-table-column align="center" prop="remarks" label="备注" width="200">
             <template slot-scope="scope">
               <p :title="scope.row.remarks" class="text-ellipsis">{{scope.row.remarks}}</p>
             </template>
           </el-table-column>
-          <el-table-column align="center" prop="failNum" label="失败次数" width="170"/>
           <el-table-column fixed="right" align="center" label="操作" width="200" >
             <template slot-scope="scope">
               <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeStatus(scope.row)" v-permission="'intro:statusDelete'" title="删除" />

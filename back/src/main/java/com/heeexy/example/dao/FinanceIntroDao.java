@@ -17,5 +17,11 @@ public interface FinanceIntroDao {
 
     int updateMysql(JSONObject jsonObject);
 
+    int statusMysql(JSONObject jsonObject);
+
     int removeMysql(JSONObject jsonObject);
+
+    int createShreas(String tableName);
+
+    int deleteTable(String tableName);
 }

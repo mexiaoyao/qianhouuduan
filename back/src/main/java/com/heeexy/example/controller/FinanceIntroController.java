@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.heeexy.example.util.constants.ErrorEnum.G_update001;
+
 @RestController
 @RequestMapping("/intro")
 public class FinanceIntroController {
@@ -64,8 +66,21 @@ public class FinanceIntroController {
     @RequiresPermissions("intro:status")
     @PostMapping("/status")
     public JSONObject status(@RequestBody JSONObject requestJson) {
-        CommonUtil.hasAllRequired(requestJson, "id,status");
-        return service.updateMysql(requestJson);
+        CommonUtil.hasAllRequired(requestJson, "id,status,codeNumber");
+        String codeNumber = requestJson.getString("codeNumber");
+        String status = requestJson.getString("status");
+        int result = service.statusMysql(requestJson);
+        if(result>0){
+            String tablesName = "t_shares_"+codeNumber;
+            if(status.equals("1")){
+                service.createShreas(tablesName);
+            }else if(status.equals("2")){
+                service.deleteTable(tablesName);
+            }
+            return CommonUtil.successJson();
+        }else{
+            return CommonUtil.errorJson(G_update001);
+        }
     }
 
     @RequiresPermissions("intro:delete")

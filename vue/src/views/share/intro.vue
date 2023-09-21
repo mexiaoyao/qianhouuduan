@@ -168,12 +168,17 @@
           if(status==2){
             msg = "下架";
           }
+          let sType = "sh";
+          if(row.indexType==2){
+            sType = "sz"
+          }
+          let codeNumber = row.codeNumber +"_" + sType;
           this.$confirm('确定要'+msg+'《'+row.sharesName+'》?', '提示', {
             confirmButtonText: '确定',
             showCancelButton: false,
             type: 'warning'
           }).then(() => {
-            let data = {id:row.id,status:status};
+            let data = {id:row.id,status:status,codeNumber:codeNumber};
             _vue.api({
               url: "/intro/status",
               method: "post",

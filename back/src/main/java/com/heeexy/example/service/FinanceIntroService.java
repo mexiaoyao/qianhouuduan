@@ -81,6 +81,11 @@ public class FinanceIntroService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    public int statusMysql(JSONObject jsonObject) {
+        return mysqlDao.statusMysql(jsonObject);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public JSONObject removeMysql(JSONObject jsonObject) {
         int result = mysqlDao.removeMysql(jsonObject);
         if(result>0){
@@ -88,5 +93,18 @@ public class FinanceIntroService {
         }else{
             return CommonUtil.errorJson(G_delete001);
         }
+    }
+    @Transactional(rollbackFor = Exception.class)
+    public int createShreas(String tableName) {
+        try {
+            return mysqlDao.createShreas(tableName);
+        }catch (Exception e){
+            log.warn(e.getMessage());
+            return 0;
+        }
+    }
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteTable(String tableName) {
+        return mysqlDao.deleteTable(tableName);
     }
 }

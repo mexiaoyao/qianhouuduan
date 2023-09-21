@@ -127,4 +127,32 @@
         where id = #{id}
     </delete>
 
+    <update id="statusMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE t_finance_intro set status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="createShreas">
+        DROP TABLE IF EXISTS ${tableName};
+        CREATE TABLE ${tableName} (
+          `id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+          `shares_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+          `today_open_price` double(6,2) DEFAULT NULL COMMENT '今日开盘价',
+          `yesterday_close_price` double(6,2) DEFAULT NULL COMMENT '昨日收盘价',
+          `today_max_price` double(6,2) DEFAULT NULL COMMENT '今日最高价',
+          `today_min_price` double(6,2) DEFAULT NULL COMMENT '今日最低价',
+          `today_average_price` double(6,2) DEFAULT NULL COMMENT '今日平均价',
+          `deal_amount` decimal(12,0) DEFAULT NULL COMMENT '成交金额',
+          `source` tinyint(1) DEFAULT NULL COMMENT '数据来源[1:定时器,2:导入,3:手动添加]',
+          `deal_shares_number` decimal(11,0) DEFAULT NULL COMMENT '成交的股票数',
+          `amplitude` double(6,2) DEFAULT NULL COMMENT '股票振幅',
+          `turnover_rate` double(6,2) DEFAULT NULL COMMENT '股票换手率',
+          `shares_date` datetime DEFAULT NULL COMMENT '记录时间',
+          `remarks` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注',
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+    </update>
+
+    <delete id="deleteTable">
+        DROP TABLE IF EXISTS ${tableName};
+    </delete>
 </mapper>
