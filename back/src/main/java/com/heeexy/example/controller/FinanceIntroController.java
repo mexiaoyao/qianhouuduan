@@ -73,9 +73,9 @@ public class FinanceIntroController {
         if(result>0){
             String tablesName = "t_shares_"+codeNumber;
             if(status.equals("1")){
-                service.createShreas(tablesName);
+                result = service.createShreas(tablesName);
             }else if(status.equals("2")){
-                service.deleteTable(tablesName);
+                result = service.deleteTable(tablesName);
             }
             return CommonUtil.successJson();
         }else{
