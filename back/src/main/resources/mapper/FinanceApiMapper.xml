@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.heeexy.example.dao.FinanceStatusDao">
+
+    <select id="countMysql" resultType="Integer">
+        SELECT count(0)
+        FROM t_finance_update
+        <where>
+            <if test="id !=null and id !=''">
+                and id = #{id}
+            </if>
+            <if test="sharesId !=null and sharesId!=0 ">
+                and shares_id = #{sharesId}
+            </if>
+            <if test="status !=null and status !=''">
+                and status = #{status}
+            </if>
+            <if test="remarks !=null and remarks !=''">
+                and remarks like concat("%",#{remarks},"%")
+            </if>
+        </where>
+    </select>
+    <select id="listMysql" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT
+        id,
+        shares_id as sharesId, status,
+        date_format(create_time, '%Y.%m.%d %T') createTime,
+        remarks,fail_num as failNum
+        FROM t_finance_update
+        <where>
+            <if test="id !=null and id !=''">
+                and id = #{id}
+            </if>
+            <if test="sharesId !=null and sharesId!=0 ">
+                and shares_id = #{sharesId}
+            </if>
+            <if test="status !=null and status !=''">
+                and status = #{status}
+            </if>
+            <if test="remarks !=null and remarks !=''">
+                and remarks like concat("%",#{remarks},"%")
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        LIMIT #{offSet}, #{pageRow}
+    </select>
+
+    <update id="updateMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE t_finance_update
+        <set>
+            <if test="status !=null">
+                status = #{status},
+            </if>
+            <if test="remarks !=null">
+                remarks = #{remarks},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeMysql">
+        delete
+        from t_finance_update
+        where id = #{id}
+    </delete>
+</mapper>

@@ -2,6 +2,7 @@ package com.heeexy.example.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.config.annotation.RequiresPermissions;
+import com.heeexy.example.service.FinanceApiService;
 import com.heeexy.example.service.FinanceIntroService;
 import com.heeexy.example.service.FinanceStatusService;
 import com.heeexy.example.service.WorkDateService;
@@ -26,6 +27,9 @@ public class FinanceIntroController {
 
     @Autowired
     private FinanceStatusService statusService;
+
+    @Autowired
+    private FinanceApiService apiService;
 
     @RequiresPermissions("intro:import")
     @PostMapping("/import")
@@ -73,9 +77,9 @@ public class FinanceIntroController {
         if(result>0){
             String tablesName = "t_shares_"+codeNumber;
             if(status.equals("1")){
-                result = service.createShreas(tablesName);
+                service.createShreas(tablesName);
             }else if(status.equals("2")){
-                result = service.deleteTable(tablesName);
+                service.deleteTable(tablesName);
             }
             return CommonUtil.successJson();
         }else{
@@ -123,6 +127,38 @@ public class FinanceIntroController {
         CommonUtil.hasAllRequired(requestJson, "id");
         return statusService.removeMysql(requestJson);
     }
+
+    @RequiresPermissions("intro:apiList")
+    @PostMapping("/apiList")
+    public JSONObject apiList(@RequestBody JSONObject requestJson) {
+        return apiService.listMysql(requestJson);
+    }
+
+    @RequiresPermissions("intro:apiAdd")
+    @PostMapping("/apiAdd")
+    public JSONObject apiAdd(@RequestBody JSONObject requestJson) {
+        CommonUtil.hasAllRequired(requestJson, "workDate, holiday");
+        requestJson.put("id", StringTools.getUUid());
+        return apiService.addMysql(requestJson);
+    }
+
+    @RequiresPermissions("intro:apiUpdate")
+    @PostMapping("/apiUpdate")
+    public JSONObject apiUpdate(@RequestBody JSONObject requestJson) {
+        CommonUtil.hasAllRequired(requestJson, "id,indexType,codeNumber,sharesName,sharesAlise,sharesTotalNumber,sharesAllowTotalNumber,remarks");
+        if(StringTools.isNullOrEmpty(requestJson.get("updateTime"))){
+            requestJson.put("updateTime", DateUtils.getDate());
+        }
+        return apiService.updateMysql(requestJson);
+    }
+
+    @RequiresPermissions("intro:apiDelete")
+    @PostMapping("/apiDelete")
+    public JSONObject apiDelete(@RequestBody JSONObject requestJson) {
+        CommonUtil.hasAllRequired(requestJson, "id");
+        return apiService.removeMysql(requestJson);
+    }
+
 
 
 }

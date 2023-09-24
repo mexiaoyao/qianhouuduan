@@ -19,6 +19,7 @@
           <el-button type="primary" @click="getList" v-permission="'intro:list'">查询</el-button>
           <el-button type="primary" @click="showCreate" v-permission="'intro:add'">添加</el-button>
           <el-button type="primary" @click="calendarShow" v-permission="'intro:add'">日历设置</el-button>
+          <el-button type="primary" @click="apiShow=true" v-permission="'intro:add'">API设置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -74,14 +75,16 @@
     <AddModal :visible.sync="updateVisible" @cancel="cancelAction" @ok="okDialog" :row="itemObj" ></AddModal>
     <CalendarModal :visible.sync="calendarVisible" @cancel="calendarVisible=false"></CalendarModal>
     <StatusModal :visible.sync="statusVisible" @cancel="statusCancel" @ok="okStatus" :row="itemObj" ></StatusModal>
+    <ApiModal :visible.sync="apiShow" @cancel="apiShow = false" ></ApiModal>
   </div>
 </template>
 <script>
   import AddModal from "./dialog/update.vue";
   import CalendarModal from "./dialog/calendar.vue";
   import StatusModal from "./dialog/updateList.vue";
+  import ApiModal from "./dialog/apiList.vue";
   export default {
-    components: { AddModal, CalendarModal, StatusModal },
+    components: { AddModal, CalendarModal, StatusModal, ApiModal },
     data() {
       return {
         parmes:{
@@ -97,6 +100,7 @@
         dialogDetaiVisible: false,
         calendarVisible: false, //日历弹框
         statusVisible: false, //更新详情
+        apiShow: false, //api设置
       }
     },
     created() {
