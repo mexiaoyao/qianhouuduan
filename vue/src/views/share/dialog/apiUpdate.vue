@@ -68,7 +68,7 @@
             if(this.$refs.ruleForm){
                 this.$refs.ruleForm.validate((valid) => {
                     if (valid) {
-                        if(""==this.form.id){
+                        if(""==this.form.id || null==this.form.id){
                             this.createForm(this);
                         }else{
                             this.updateForm(this);

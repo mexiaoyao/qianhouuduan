@@ -1,42 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.heeexy.example.dao.FinanceStatusDao">
+<mapper namespace="com.heeexy.example.dao.FinanceApiDao">
+
+    <insert id="addMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        INSERT INTO t_finance_api
+        (id,
+        `name`, url, max_number, space_number,
+        create_time, remarks)
+        VALUES
+        (
+        #{id},
+        #{name},#{url},#{maxNumber},#{spaceNumber},
+        #{createTime},#{remarks}
+        )
+    </insert>
+
+    <update id="updateMysql" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE t_finance_api
+        <set>
+            <if test="name !=null and name !=''">
+                `name` = #{name},
+            </if>
+            <if test="url !=null and url !=''">
+                url = #{url},
+            </if>
+            <if test="maxNumber !=null and maxNumber !=''">
+                max_number = #{maxNumber},
+            </if>
+            <if test="spaceNumber !=null and spaceNumber !=''">
+                space_number = #{spaceNumber},
+            </if>
+            <if test="remarks !=null">
+                remarks = #{remarks},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
 
     <select id="countMysql" resultType="Integer">
         SELECT count(0)
-        FROM t_finance_update
+        FROM t_finance_api
         <where>
             <if test="id !=null and id !=''">
                 and id = #{id}
             </if>
-            <if test="sharesId !=null and sharesId!=0 ">
-                and shares_id = #{sharesId}
+            <if test="name !=null and name!=0 ">
+                and `name` = #{name}
             </if>
-            <if test="status !=null and status !=''">
-                and status = #{status}
+            <if test="url !=null and url !=''">
+                and url = #{url}
+            </if>
+            <if test="maxNumber !=null">
+                and max_number = #{maxNumber}
+            </if>
+            <if test="spaceNumber !=null">
+                and space_number = #{spaceNumber}
+            </if>
+            <if test="createTime !=null and createTime !=''">
+                and createTime = #{createTime}
             </if>
             <if test="remarks !=null and remarks !=''">
                 and remarks like concat("%",#{remarks},"%")
             </if>
         </where>
     </select>
+
     <select id="listMysql" resultType="com.alibaba.fastjson.JSONObject">
         SELECT
-        id,
-        shares_id as sharesId, status,
+        id, `name`, url, max_number as maxNumber, space_number as spaceNumber,
         date_format(create_time, '%Y.%m.%d %T') createTime,
-        remarks,fail_num as failNum
-        FROM t_finance_update
+        remarks
+        FROM t_finance_api
         <where>
             <if test="id !=null and id !=''">
                 and id = #{id}
             </if>
-            <if test="sharesId !=null and sharesId!=0 ">
-                and shares_id = #{sharesId}
+            <if test="name !=null and name!=0 ">
+                and `name` = #{name}
             </if>
-            <if test="status !=null and status !=''">
-                and status = #{status}
+            <if test="url !=null and url !=''">
+                and url = #{url}
+            </if>
+            <if test="maxNumber !=null">
+                and max_number = #{maxNumber}
+            </if>
+            <if test="spaceNumber !=null">
+                and space_number = #{spaceNumber}
+            </if>
+            <if test="createTime !=null and createTime !=''">
+                and createTime = #{createTime}
             </if>
             <if test="remarks !=null and remarks !=''">
                 and remarks like concat("%",#{remarks},"%")
@@ -46,22 +99,9 @@
         LIMIT #{offSet}, #{pageRow}
     </select>
 
-    <update id="updateMysql" parameterType="com.alibaba.fastjson.JSONObject">
-        UPDATE t_finance_update
-        <set>
-            <if test="status !=null">
-                status = #{status},
-            </if>
-            <if test="remarks !=null">
-                remarks = #{remarks},
-            </if>
-        </set>
-        WHERE id = #{id}
-    </update>
-
     <delete id="removeMysql">
         delete
-        from t_finance_update
+        from t_finance_api
         where id = #{id}
     </delete>
 </mapper>

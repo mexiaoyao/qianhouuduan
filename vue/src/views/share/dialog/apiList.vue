@@ -1,7 +1,7 @@
 <template>
       <el-dialog title="API列表" :visible.sync="isShow" :before-close="cancelClick" @cancel="cancelClick" width="1024px">
         <el-row>
-          <el-button type="primary" @click="addApi" v-permission="'intro:add'">添加</el-button>
+          <el-button type="primary" @click="addApi({})" v-permission="'intro:add'">添加</el-button>
         </el-row>
         <el-table :data="list" style="width: 100%;margin-bottom: 20px;" row-key="id" fit highlight-current-row border >
           <el-table-column fixed align="center" label="序号" width="80">
@@ -72,6 +72,7 @@
         },
         okStatus(){
           this.apiVisible = false;
+          this.getList();
         },
         cancelClick() {
             this.$emit("cancel");
