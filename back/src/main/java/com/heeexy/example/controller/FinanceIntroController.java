@@ -137,7 +137,7 @@ public class FinanceIntroController {
     @RequiresPermissions("intro:apiAdd")
     @PostMapping("/apiAdd")
     public JSONObject apiAdd(@RequestBody JSONObject requestJson) {
-        CommonUtil.hasAllRequired(requestJson, "name,url,maxNumber,spaceNumber,remarks");
+        CommonUtil.hasAllRequired(requestJson, "name,funName, url,maxNumber,spaceNumber,remarks");
         requestJson.put("id", StringTools.getUUid());
         if(StringTools.isNullOrEmpty(requestJson.get("createTime"))){
             requestJson.put("createTime", DateUtils.getDate());
@@ -148,7 +148,7 @@ public class FinanceIntroController {
     @RequiresPermissions("intro:apiUpdate")
     @PostMapping("/apiUpdate")
     public JSONObject apiUpdate(@RequestBody JSONObject requestJson) {
-        CommonUtil.hasAllRequired(requestJson, "id,name,url,maxNumber,spaceNumber,remarks");
+        CommonUtil.hasAllRequired(requestJson, "id,name,funName,url,maxNumber,spaceNumber,remarks");
         return apiService.updateMysql(requestJson);
     }
 

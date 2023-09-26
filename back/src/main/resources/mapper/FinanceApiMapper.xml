@@ -6,12 +6,12 @@
     <insert id="addMysql" parameterType="com.alibaba.fastjson.JSONObject">
         INSERT INTO t_finance_api
         (id,
-        `name`, url, max_number, space_number,
+        `name`,fun_name, url, max_number, space_number,
         create_time, remarks)
         VALUES
         (
         #{id},
-        #{name},#{url},#{maxNumber},#{spaceNumber},
+        #{name},#{funName},#{url},#{maxNumber},#{spaceNumber},
         #{createTime},#{remarks}
         )
     </insert>
@@ -21,6 +21,9 @@
         <set>
             <if test="name !=null and name !=''">
                 `name` = #{name},
+            </if>
+            <if test="funName !=null and funName !=''">
+                fun_name = #{funName},
             </if>
             <if test="url !=null and url !=''">
                 url = #{url},
@@ -48,6 +51,9 @@
             <if test="name !=null and name!=0 ">
                 and `name` = #{name}
             </if>
+            <if test="funName !=null and funName !=''">
+                and fun_name = #{funName}
+            </if>
             <if test="url !=null and url !=''">
                 and url = #{url}
             </if>
@@ -68,7 +74,7 @@
 
     <select id="listMysql" resultType="com.alibaba.fastjson.JSONObject">
         SELECT
-        id, `name`, url, max_number as maxNumber, space_number as spaceNumber,
+        id, `name`, fun_name as funName, url, max_number as maxNumber, space_number as spaceNumber,
         date_format(create_time, '%Y.%m.%d %T') createTime,
         remarks
         FROM t_finance_api
@@ -78,6 +84,9 @@
             </if>
             <if test="name !=null and name!=0 ">
                 and `name` = #{name}
+            </if>
+            <if test="funName !=null and funName !=''">
+                and fun_name = #{funName}
             </if>
             <if test="url !=null and url !=''">
                 and url = #{url}

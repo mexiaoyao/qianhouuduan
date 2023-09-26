@@ -14,6 +14,7 @@
               <p :title="scope.row.name" class="text-ellipsis">{{scope.row.name}}</p>
             </template>
           </el-table-column>
+          <el-table-column align="center" prop="funName" label="处理方法"/>
           <el-table-column align="center" prop="url" label="URL">
             <template slot-scope="scope">
               <p :title="scope.row.url" class="text-ellipsis">{{scope.row.url}}</p>

@@ -4,6 +4,9 @@
           <el-form-item label="网站名称" prop="name">
             <el-input type="text" style="width:100%" v-model="form.name"  maxlength="100"></el-input>
           </el-form-item>
+          <el-form-item label="处理方法" prop="funName">
+            <el-input type="text" style="width:100%" v-model="form.funName"  maxlength="100"></el-input>
+          </el-form-item>
           <el-form-item label="请求URL" prop="url">
             <el-input type="text" style="width:100%" v-model="form.url"  maxlength="100"></el-input>
           </el-form-item>
@@ -53,6 +56,7 @@
         rules(){
             return {
               name: [{ required: true, message: "网站名称", trigger: "blur" }],
+              funName: [{ required: true, message: "处理方法", trigger: "blur" }],
               url: [{ required: true, message: "请求URL", trigger: "blur" }],
               maxNnumber: [{ required: true, message: "股票总数不可为空", trigger: "blur" }],
               spaceNumber: [{ required: true, message: "可流动股票总数不可为空", trigger: "blur" }],
