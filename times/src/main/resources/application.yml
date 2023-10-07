@@ -1,0 +1,11 @@
+server:
+  port: 9090
+  servlet:
+    context-path: /times
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://124.221.52.209:3306/ulm?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: Zlzx!1988
+
