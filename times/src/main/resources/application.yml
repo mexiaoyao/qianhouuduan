@@ -9,3 +9,8 @@ spring:
     username: root
     password: Zlzx!1988
 
+mybatis-plus:
+  mapper-locations: classpath:/mapping/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
