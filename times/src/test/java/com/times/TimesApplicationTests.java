@@ -9,12 +9,9 @@ import javax.annotation.Resource;
 @SpringBootTest
 class TimesApplicationTests {
 
-    @Resource
-    ApiService apiService;
-
     @Test
     void contextLoads() {
-        apiService.apiDelete("vsss1");
+
     }
 
 }
